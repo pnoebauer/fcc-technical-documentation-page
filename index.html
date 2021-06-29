@@ -7,5 +7,65 @@
 		<title>Document</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
-	<body></body>
+	<body>
+		<main id="main-doc">
+			<section class="main-section" id="Introduction">
+				<header>Introduction</header>
+				<article>
+					<p>
+						This guide will walk you through on how to obtain free stock data with Node.js
+						via the TD Ameritrade API.
+					</p>
+					<p>
+						First a Developer Account has to be created with TD Ameritrade and an App has
+						to be registered.
+					</p>
+					<p>
+						Instructions on how to achieve this can be found on
+						<a
+							href="https://developer.tdameritrade.com/content/getting-started#createAccount"
+							target="_blank"
+							>TD Ameritrade Account Setup</a
+						>.
+					</p>
+				</article>
+			</section>
+			<section class="main-section" id="storage-of-the-API-key">
+				<header>Storage of the API key</header>
+				<article>
+					<p>
+						Environment variables are excellent places to store sensitive information
+						(such as API keys), or information that needs to be globally accessible from
+						anywhere in the app, (such as version numbers or hardcoded paths). Your app's
+						.
+					</p>
+					<p>
+						Accessing environment variables in Node.js is supported right out of the box.
+						When your Node.js process boots up it will automatically provide access to all
+						existing environment variables by creating an env object as property of the
+						process global object.
+					</p>
+					<p>
+						However, if you want to achieve project specific configuration, .env files are
+						the way to go. To load values from that .env file we will use an
+						<a href="http://npm.im/dotenv" target="_blank">npm module called dotenv</a>
+
+						Simply install the module via npm:
+						<code>npm install dotenv --save</code>
+					</p>
+					<p>
+						Afterwards add the following line to the very top of your entry file:
+						<code>require('dotenv').config();</code>
+					</p>
+					<p>
+						In your project folder create a new file and save under <b>.env</b>. Add
+						<code> API_SECRET_KEY = <i>Your Consumer Key</i> </code>
+					</p>
+				</article>
+			</section>
+			<section class="main-section"><header>Topic 3</header></section>
+			<section class="main-section"><header>Topic 4</header></section>
+			<section class="main-section"><header>Topic 5</header></section>
+		</main>
+	</body>
 </html>
