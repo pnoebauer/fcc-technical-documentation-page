@@ -4,10 +4,26 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>TD Ameritrade API Documentation</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
+		<nav id="navbar">
+			<header>API Documentation</header>
+			<ul>
+				<li><a class="nav-link" href="#Introduction">Introduction</a></li>
+				<li>
+					<a class="nav-link" href="#Storage_of_the_API_key">Storage of the API key</a>
+				</li>
+				<li><a class="nav-link" href="#Query_String_Setup">Query String Setup</a></li>
+				<li>
+					<a class="nav-link" href="#URL_for_Fetching_Live_Data"
+						>URL for Fetching Live Data</a
+					>
+				</li>
+				<li><a class="nav-link" href="#Fetching_the_Data">Fetching the Data</a></li>
+			</ul>
+		</nav>
 		<main id="main-doc">
 			<section class="main-section" id="Introduction">
 				<header>Introduction</header>
@@ -30,7 +46,7 @@
 					</p>
 				</article>
 			</section>
-			<section class="main-section" id="storage-of-the-API-key">
+			<section class="main-section" id="Storage_of_the_API_key">
 				<header>Storage of the API key</header>
 				<article>
 					<p>
@@ -58,14 +74,116 @@
 						<code>require('dotenv').config();</code>
 					</p>
 					<p>
-						In your project folder create a new file and save under <b>.env</b>. Add
+						In your project folder create a new file and save under <b>.env</b>. <br />
+						Add following line to the <b>.env</b> file and save:
 						<code> API_SECRET_KEY = <i>Your Consumer Key</i> </code>
 					</p>
 				</article>
 			</section>
-			<section class="main-section"><header>Topic 3</header></section>
-			<section class="main-section"><header>Topic 4</header></section>
-			<section class="main-section"><header>Topic 5</header></section>
+			<section class="main-section" id="Query_String_Setup">
+				<header>Query String Setup</header>
+				<article>
+					<p>
+						In order to retrieve data from TD Ameritrade we first need to create the
+						required string to the resource we wish to fetch. <br />The string for
+						fetching live data consists out of base URL, plus the query string.
+					</p>
+					<p>
+						The base URL is: <br />
+						<b>https://api.tdameritrade.com/v1/marketdata/quotes</b>
+					</p>
+					<p>
+						The query string consists out of the API key plus the symbols we want to
+						retrieve data for. The query string itself will have following format <br />
+						<b>?apikey=<i>Your API key</i>&symbol=<i>requested symbol</i></b>
+					</p>
+					<p>
+						In order to setup the query string we will make use of the URLSearchParams
+						interface, which defines utility methods to work with the query string of a
+						URL. We will pass the required query parameters to URLSearchParams in the form
+						of an object and use the toString() method. This returns a string containing a
+						query string suitable for use in a URL, which is exactly what we need for the
+						fetch API.
+					</p>
+				</article>
+			</section>
+			<section class="main-section" id="URL_for_Fetching_Live_Data">
+				<header>URL for Fetching Live Data</header>
+				<article>
+					<p>To summarize, the steps we have to take create the URL are following:</p>
+
+					<ul>
+						<li>import the dotenv nodemodule</li>
+						<li>retrieve the API key from the .env file</li>
+						<li>specify the symbols we want to fetch data for</li>
+						<li>create an object with apikey and symbols</li>
+						<li>
+							pass that object to URLSearchParams and use its toString() method to return
+							the query string
+						</li>
+						<li>combine that query string with the base url</li>
+					</ul>
+					In code those steps will look as follows:
+					<!-- prettier-ignore -->
+					<code
+					>	if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+						const apikey = process.env.API_SECRET_KEY;
+						const symbol = ['GOOGL', 'AAPL'];
+						const symbolObject = {symbol};
+						const queryParams = {apikey, ...symbolObject};
+						const queryString = new URLSearchParams(queryParams).toString();
+						const baseUrl = 'https://api.tdameritrade.com/v1/marketdata/quotes';
+						const fetchURL = `${baseUrl}?${queryString}`;
+					</code>
+				</article>
+			</section>
+			<section class="main-section" id="Fetching_the_Data">
+				<header>Fetching the Data</header>
+				<article>
+					<p>
+						Now all that's left is fetching the data based on the fetchURL and convert the
+						returned JSON to a JavaScript object.
+						<br />To achieve this and improve readability we use an asynchronous function
+						for creating the fetchURL and fetching the data.
+					</p>
+					<article>
+						Below the final function for fetching the data from the TD Ameritrade API:
+						<!-- prettier-ignore -->
+					</article>
+
+					<pre>
+<code
+>async function fetchData(symbol) {
+	const apikey = process.env.API_SECRET_KEY;
+	const symbolObject = {symbol};
+	const queryParams = {apikey, ...symbolObject};
+	const queryString = new URLSearchParams(params).toString();
+	const baseUrl = 'https://api.tdameritrade.com/v1/marketdata/quotes';
+	const fetchURL = `${baseUrl}?${queryString}`;
+
+	try {
+		const response = await fetch(fetchURL);
+		const data = await response.json();
+		return data;
+	} catch (e) {
+		console.log('error fetch data', e);
+	}
+}	
+</code>	
+</pre>
+					<p>
+						In order to fetch data for one symbol simply pass the symbol as a string:
+						<code>const data = fetchData('SPY');</code>
+					</p>
+					<p>
+						To fetch multiple symbols at once pass an array of strings containing the
+						symbols:
+						<code>const data = fetchData(['GOOGL', 'AAPL']);</code>
+						Note that only about 200 symbols can fetched at once, more is not allowed due
+						to limits set by the TD Ameritrade API.
+					</p>
+				</article>
+			</section>
 		</main>
 	</body>
 </html>
